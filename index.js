@@ -11,6 +11,9 @@ app.get('/', (request, response) => {
     response.send(request.body);
 })
 
+app.get('/api/identify', (request, response) => {
+    response.send({message: "api endpoint for identifing the books"});
+})
 
 app.listen(PORT, () => {
     console.log(`App listening on port ${PORT}`);

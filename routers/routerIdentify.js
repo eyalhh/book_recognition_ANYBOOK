@@ -1,29 +1,30 @@
 const express = require("express")
 const router = express.Router();
-
+const detectObjects = require("../utils/analyzingFunctions");
+const path = require("path");
 // initializing multer to handle file uploading 
 const multer = require("multer");
 
 const storage = multer.diskStorage({
 
-    destination: (req, res, cb) => {
+    destination: (req, file, cb) => {
         cb(null, 'uploads');
+    },
+    filename: (req, file, cb) => {
+        cb(null, file.originalname);
     }
 
 });
 
 const uploads = multer({storage: storage});
 
-// endpoint to split image into seperate recognizable images
-router.post('/api/split', uploads.single('file'), (request, response) => {
-    if (!request.file) return response.statusCode(400);
-    
-})
 
 // main endpoint to identify
 router.post('/api/identify', uploads.single('file'), (request, response) => {
     if (!request.file) return response.sendStatus(400);
-    return response.send({message: "You uploaded a file ! thanks for cooperating !"});
+    const imagePath = path.join(__dirname, "../", "uploads", request.file.originalname);
+    detectObjects(imagePath);
+    return response.sendStatus(200);
 })
 
 
